@@ -1,5 +1,4 @@
 using GLMakie, FileIO, DelimitedFiles
-GLMakie.activate!() # hide
 
 
 """
@@ -72,13 +71,13 @@ function digitizePlot(X_BC::Tuple, Y_BC::Tuple, file_name::String, export_name::
     lines_conv  = Observable([[]])
     points      = Observable(Point2f[])
     points_conv = Observable(Point2f[])
+    colors      = Observable([RGBf(rand(3)...)])
     active      = 1
     #Get points----------------------------------------------------
-    scatter!(scene, points, color = :red, marker = '+',markersize = 18)
-    lines!(scene, points, color = :blue, linewidth = 5) 
+    lines!(scene, points, color = colors[active], linewidth = 3) 
+    scatter!(scene, points, color = :red, marker = '+',markersize = 25)
 
     on(events(scene).mousebutton) do event
-
         if event.button == Mouse.left
             if event.action == Mouse.press
                 if Keyboard.d in events(scene).keyboardstate
@@ -92,14 +91,15 @@ function digitizePlot(X_BC::Tuple, Y_BC::Tuple, file_name::String, export_name::
                 elseif Keyboard.n in events(scene).keyboardstate
                     new_points = []
                     new_points_conv = []
+                    new_color = RGBf(rand(3)...)
                     push!(lines[], new_points)
                     push!(lines_conv[], new_points_conv)
+                    push!(colors, new_color)
                     println("------------------------")
                     println("A new line has been added.")
                     println("Number of lines: $(length(lines[]))")
                     println("------------------------")
                 elseif Keyboard.s in events(scene).keyboardstate
-
                     lines[][active] = copy(points[])
                     lines_conv[][active] = copy(points_conv[])
                     active = active + 1
@@ -119,13 +119,11 @@ function digitizePlot(X_BC::Tuple, Y_BC::Tuple, file_name::String, export_name::
                     println("------------------------")
                     notify(points)
                     notify(lines)
-                    
                 elseif Keyboard.e in events(scene).keyboardstate
                     println("------------------------")
                     println("Exporting line_$active.")
                     println("------------------------")
                     writedlm(export_name * "_$active.csv", points_conv[])
-
                 else
                     mp = events(scene).mouseposition[]
                     pos = to_world(scene, mp)
@@ -150,8 +148,8 @@ function digitizePlot(X_BC::Tuple, Y_BC::Tuple, file_name::String, export_name::
     return lines_conv[]
 end
 
-file_name = "Examples_phase_diagram/Ol_Phase_diagram_without_framework.png"
-
-Y_BC       = (1273.0, 1873.0)   #min max of Y in the phase diagram
+# file_name = "Examples_phase_diagram/Ol_Phase_diagram_without_framework.png"
+file_name = "Examples_phase_diagram/test.png"
+Y_BC       = (0, 350)   #min max of Y in the phase diagram
 X_BC       = (0.0, 1.0) 
 lines      = digitizePlot(X_BC, Y_BC, file_name)
