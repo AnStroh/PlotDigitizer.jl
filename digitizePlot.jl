@@ -46,7 +46,7 @@ end
 
 function digitizePlot(X_BC::Tuple, Y_BC::Tuple, file_name::String)
     #Load image----------------------------------------------------
-    img   = rotr90(load(assetpath(file_name)))
+    img   = rotr90(load(file_name))
     pixel = size(img)
     #Create scene--------------------------------------------------
     scene       = Scene(camera = campixel!, size=pixel)
@@ -55,6 +55,7 @@ function digitizePlot(X_BC::Tuple, Y_BC::Tuple, file_name::String)
     points_conv = Observable([])
     #Get points----------------------------------------------------
     scatter!(scene, points, color = :red, marker = '+',markersize = 18)
+
     on(events(scene).mousebutton) do event
         if event.button == Mouse.left
             if event.action == Mouse.press || event.action == Mouse.release
@@ -74,13 +75,14 @@ function digitizePlot(X_BC::Tuple, Y_BC::Tuple, file_name::String)
         end
         return points_conv
     end
+    
     display(scene)
 
     return points_conv
 end
 
-file_name = "/home/annalena/Dropbox/Annalena_Vangelis_Diffusion_Couple/Julia_WORK_Annalena/examples/Examples_phase_diagram/Ol_Phase_diagram_without_framework.png"
+file_name = "Examples_phase_diagram/Ol_Phase_diagram_without_framework.png"
 
 Y_BC       = (1273.0, 1873.0)   #min max of Y in the phase diagram
 X_BC       = (0.0, 1.0) 
-coord = digitizePlot(X_BC, Y_BC, file_name)
+coord      = digitizePlot(X_BC, Y_BC, file_name)
