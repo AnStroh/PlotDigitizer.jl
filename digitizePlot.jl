@@ -1,4 +1,4 @@
-using GLMakie, FileIO
+using GLMakie, FileIO, DelimitedFiles
 GLMakie.activate!() # hide
 
 
@@ -43,6 +43,22 @@ function linear_func(X, x, m)
     Y = m * x + X[1]
     return Y
 end
+
+"""
+    digitizePlot(X_BC, Y_BC, file_name, export_name)
+
+Digitize a plot by clicking on the points of interest and exporting the coordinates.
+
+# Arguments
+- `X_BC::Tuple{Float64, Float64}`: The boundary conditions for the X coordinate.
+- `Y_BC::Tuple{Float64, Float64}`: The boundary conditions for the Y coordinate.
+- `file_name::String`: The name of the file containing the plot.
+- `export_name::String`: The name of the file to which the coordinates will be exported.
+
+# Returns
+- Vector{Vector} where each vector contains the coordinates of the points in the corresponding line.
+
+"""
 
 function digitizePlot(X_BC::Tuple, Y_BC::Tuple, file_name::String, export_name::String = "digitized_data")
     #Load image----------------------------------------------------
@@ -131,11 +147,11 @@ function digitizePlot(X_BC::Tuple, Y_BC::Tuple, file_name::String, export_name::
     
     display(scene)
 
-    return points_conv, lines_conv
+    return lines_conv[]
 end
 
 file_name = "Examples_phase_diagram/Ol_Phase_diagram_without_framework.png"
 
 Y_BC       = (1273.0, 1873.0)   #min max of Y in the phase diagram
 X_BC       = (0.0, 1.0) 
-points, lines      = digitizePlot(X_BC, Y_BC, file_name)
+lines      = digitizePlot(X_BC, Y_BC, file_name)
