@@ -57,20 +57,28 @@ function digitizePlot(X_BC::Tuple, Y_BC::Tuple, file_name::String)
     scatter!(scene, points, color = :red, marker = '+',markersize = 18)
 
     on(events(scene).mousebutton) do event
+
         if event.button == Mouse.left
-            if event.action == Mouse.press || event.action == Mouse.release
-                mp = events(scene).mouseposition[]
-                pos = to_world(scene, mp)
-                pos_conv = calc_X_Y(pos, X_BC, Y_BC, pixel)
-                println("------------------------")
-                println("Your new coordinate [x,y] within the picture is: $pos.")
-                println("\n X, Y = $pos_conv \n")
-                println("To exit the function, please close the window.")
-                println("------------------------")
-                push!(points[], mp)
-                push!(points_conv[], pos_conv)
-                notify(points)
-                notify(points_conv)
+            if event.action == Mouse.press
+                if Keyboard.d in events(scene).keyboardstate
+                    deleteat!(points[], length(points[]))
+                    deleteat!(points_conv[], length(points_conv[]))
+                    notify(points)
+                    notify(points_conv)
+                else
+                    mp = events(scene).mouseposition[]
+                    pos = to_world(scene, mp)
+                    pos_conv = calc_X_Y(pos, X_BC, Y_BC, pixel)
+                    println("------------------------")
+                    println("Your new coordinate [x,y] within the picture is: $pos.")
+                    println("\n X, Y = $pos_conv \n")
+                    println("To exit the function, please close the window.")
+                    println("------------------------")
+                    push!(points[], mp)
+                    push!(points_conv[], pos_conv)
+                    notify(points)
+                    notify(points_conv)
+                end
             end
         end
         return points_conv
