@@ -44,7 +44,7 @@ function linear_func(X, x, m)
     return Y
 end
 
-function digitizePlot(Y_BC::Tuple, X_BC::Tuple, file_name::String)
+function digitizePlot(X_BC::Tuple, Y_BC::Tuple, file_name::String)
     #Load image----------------------------------------------------
     img   = rotr90(load(assetpath(file_name)))
     pixel = size(img)
@@ -75,10 +75,12 @@ function digitizePlot(Y_BC::Tuple, X_BC::Tuple, file_name::String)
         return points_conv
     end
     display(scene)
+
+    return points_conv
 end
 
 file_name = "/home/annalena/Dropbox/Annalena_Vangelis_Diffusion_Couple/Julia_WORK_Annalena/examples/Examples_phase_diagram/Ol_Phase_diagram_without_framework.png"
 
 Y_BC       = (1273.0, 1873.0)   #min max of Y in the phase diagram
 X_BC       = (0.0, 1.0) 
-coord = digitizePlot(Y_BC, X_BC)
+coord = digitizePlot(X_BC, Y_BC, file_name)
