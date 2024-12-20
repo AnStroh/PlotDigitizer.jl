@@ -29,7 +29,7 @@ end
 """
     linear_func(X, x, m)
 
-Compute the linear function `Y = m * x + X[1]`.
+Compute the linear function `Y = m * x + b`.
 
 # Arguments
 - `X::Vector{T}`: A vector where `X[1]` is used as the y-intercept.
