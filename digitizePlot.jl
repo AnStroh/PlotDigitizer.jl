@@ -44,17 +44,22 @@ function linear_func(X, x, m)
     return Y
 end
 
-function digitizePlot(X_BC::Tuple, Y_BC::Tuple, file_name::String)
+function digitizePlot(X_BC::Tuple, Y_BC::Tuple, file_name::String, export_name::String = "digitized_data")
     #Load image----------------------------------------------------
     img   = rotr90(load(file_name))
     pixel = size(img)
     #Create scene--------------------------------------------------
     scene       = Scene(camera = campixel!, size=pixel)
     image!(scene,img) 
+    #Initialize points---------------------------------------------
+    lines       = Observable([[]])
+    lines_conv  = Observable([[]])
     points      = Observable(Point2f[])
-    points_conv = Observable([])
+    points_conv = Observable(Point2f[])
+    active      = 1
     #Get points----------------------------------------------------
     scatter!(scene, points, color = :red, marker = '+',markersize = 18)
+    lines!(scene, points, color = :blue, linewidth = 5) 
 
     on(events(scene).mousebutton) do event
 
@@ -65,6 +70,46 @@ function digitizePlot(X_BC::Tuple, Y_BC::Tuple, file_name::String)
                     deleteat!(points_conv[], length(points_conv[]))
                     notify(points)
                     notify(points_conv)
+                    println("------------------------")
+                    println("The last point has been deleted.")
+                    println("------------------------")
+                elseif Keyboard.n in events(scene).keyboardstate
+                    new_points = []
+                    new_points_conv = []
+                    push!(lines[], new_points)
+                    push!(lines_conv[], new_points_conv)
+                    println("------------------------")
+                    println("A new line has been added.")
+                    println("Number of lines: $(length(lines[]))")
+                    println("------------------------")
+                elseif Keyboard.s in events(scene).keyboardstate
+
+                    lines[][active] = copy(points[])
+                    lines_conv[][active] = copy(points_conv[])
+                    active = active + 1
+
+                    if active > length(lines[])
+                        active = 1
+                    end
+
+                    points[] = []
+                    points_conv[] = []
+                    
+                    push!(points[] , lines[][active]...)
+                    push!(points_conv[] , lines_conv[][active]...)
+
+                    println("------------------------")
+                    println("Switched to line $active.")
+                    println("------------------------")
+                    notify(points)
+                    notify(lines)
+                    
+                elseif Keyboard.e in events(scene).keyboardstate
+                    println("------------------------")
+                    println("Exporting line_$active.")
+                    println("------------------------")
+                    writedlm(export_name * "_$active.csv", points_conv[])
+
                 else
                     mp = events(scene).mouseposition[]
                     pos = to_world(scene, mp)
@@ -86,11 +131,11 @@ function digitizePlot(X_BC::Tuple, Y_BC::Tuple, file_name::String)
     
     display(scene)
 
-    return points_conv
+    return points_conv, lines_conv
 end
 
 file_name = "Examples_phase_diagram/Ol_Phase_diagram_without_framework.png"
 
 Y_BC       = (1273.0, 1873.0)   #min max of Y in the phase diagram
 X_BC       = (0.0, 1.0) 
-coord      = digitizePlot(X_BC, Y_BC, file_name)
+points, lines      = digitizePlot(X_BC, Y_BC, file_name)
