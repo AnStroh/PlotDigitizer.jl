@@ -60,22 +60,22 @@ Digitize a plot by clicking on the points of interest and exporting the coordina
 """
 
 function digitizePlot(X_BC::Tuple, Y_BC::Tuple, file_name::String, export_name::String = "digitized_data")
-    #Load image----------------------------------------------------
+    #Load image---------------------------------------------------------
     img   = rotr90(load(file_name))
     pixel = size(img)
-    #Create scene--------------------------------------------------
+    #Create scene-------------------------------------------------------
     scene       = Scene(camera = campixel!, size=pixel)
     image!(scene,img) 
-    #Initialize points---------------------------------------------
+    #Initialize Observables---------------------------------------------
     lines       = Observable([[]])
     lines_conv  = Observable([[]])
     points      = Observable(Point2f[])
     points_conv = Observable(Point2f[])
-    colors      = Observable([RGBf(rand(3)...)])
+    colors      = [RGBf(rand(3)...)]
     active      = 1
-    #Get points----------------------------------------------------
-    lines!(scene, points, color = colors[active], linewidth = 3) 
-    scatter!(scene, points, color = :red, marker = '+',markersize = 25)
+    #Plot the points----------------------------------------------------
+    p1 = lines!(scene, points, color = colors[active], linewidth = 3) 
+    p2 = scatter!(scene, points, color = :red, marker = '+',markersize = 25)
 
     on(events(scene).mousebutton) do event
         if event.button == Mouse.left
@@ -100,6 +100,14 @@ function digitizePlot(X_BC::Tuple, Y_BC::Tuple, file_name::String, export_name::
                     println("Number of lines: $(length(lines[]))")
                     println("------------------------")
                 elseif Keyboard.s in events(scene).keyboardstate
+
+                    if length(lines[]) == 1
+                        println("------------------------")
+                        println("There is only one line. To add a new line, press 'n' and click the left mouse button.")
+                        println("------------------------")
+                        return
+                    end
+
                     lines[][active] = copy(points[])
                     lines_conv[][active] = copy(points_conv[])
                     active = active + 1
@@ -113,6 +121,8 @@ function digitizePlot(X_BC::Tuple, Y_BC::Tuple, file_name::String, export_name::
                     
                     push!(points[] , lines[][active]...)
                     push!(points_conv[] , lines_conv[][active]...)
+
+                    p1.color = colors[active]
 
                     println("------------------------")
                     println("Switched to line $active.")
