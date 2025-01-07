@@ -73,84 +73,101 @@ function digitizePlot(X_BC::Tuple, Y_BC::Tuple, file_name::String, export_name::
     points_conv = Observable(Point2f[])
     colors      = [RGBf(rand(3)...)]
     active      = 1
-    #Plot the points----------------------------------------------------
+    #Flag to stop the interaction---------------------------------------
+    interaction = true                      
+    #Plot the points and lines-------------------------------------------
     p1 = lines!(scene, points, color = colors[active], linewidth = 3) 
     p2 = scatter!(scene, points, color = :red, marker = '+',markersize = 25)
-
+    #Define interactions-------------------------------------------------
     on(events(scene).mousebutton) do event
-        if event.button == Mouse.left
-            if event.action == Mouse.press
-                if Keyboard.d in events(scene).keyboardstate
-                    deleteat!(points[], length(points[]))
-                    deleteat!(points_conv[], length(points_conv[]))
-                    notify(points)
-                    notify(points_conv)
-                    println("------------------------")
-                    println("The last point has been deleted.")
-                    println("------------------------")
-                elseif Keyboard.n in events(scene).keyboardstate
-                    new_points = []
-                    new_points_conv = []
-                    new_color = RGBf(rand(3)...)
-                    push!(lines[], new_points)
-                    push!(lines_conv[], new_points_conv)
-                    push!(colors, new_color)
-                    println("------------------------")
-                    println("A new line has been added.")
-                    println("Number of lines: $(length(lines[]))")
-                    println("------------------------")
-                elseif Keyboard.s in events(scene).keyboardstate
-
-                    if length(lines[]) == 1
+        while interaction == true
+            if event.button == Mouse.left
+                if event.action == Mouse.press
+                    #Delete points
+                    if Keyboard.d in events(scene).keyboardstate
+                        deleteat!(points[], length(points[]))
+                        deleteat!(points_conv[], length(points_conv[]))
+                        notify(points)
+                        notify(points_conv)
                         println("------------------------")
-                        println("There is only one line. To add a new line, press 'n' and click the left mouse button.")
+                        println("The last point has been deleted.")
                         println("------------------------")
-                        return
+                    #Add new line
+                    elseif Keyboard.n in events(scene).keyboardstate
+                        new_points = []
+                        new_points_conv = []
+                        new_color = RGBf(rand(3)...)
+                        push!(lines[], new_points)
+                        push!(lines_conv[], new_points_conv)
+                        push!(colors, new_color)
+                        println("------------------------")
+                        println("A new line has been added.")
+                        println("Number of lines: $(length(lines[]))")
+                        println("------------------------")
+                    #Switch line
+                    elseif Keyboard.s in events(scene).keyboardstate
+                        #Check if there is only one line--------------------------------
+                        if length(lines[]) == 1
+                            println("------------------------")
+                            println("There is only one line. To add a new line, press 'n' and click the left mouse button.")
+                            println("------------------------")
+                            return
+                        end
+                        #Switch line-----------------------------------------------------
+                        lines[][active] = copy(points[])
+                        lines_conv[][active] = copy(points_conv[])
+                        active = active + 1
+                        #Start from the first line if the last line is reached-----------
+                        if active > length(lines[])
+                            active = 1
+                        end
+                        #Update the points in active line---------------------------------
+                        points[] = []
+                        points_conv[] = []
+                        
+                        push!(points[] , lines[][active]...)
+                        push!(points_conv[] , lines_conv[][active]...)
+
+                        p1.color = colors[active]
+                        #Notify the changes------------------------------------------------
+                        println("------------------------")
+                        println("Switched to line $active.")
+                        println("------------------------")
+                        notify(points)
+                        notify(lines)
+                    #Export line
+                    elseif Keyboard.e in events(scene).keyboardstate
+                        println("------------------------")
+                        println("Exporting line_$active.")
+                        println("------------------------")
+                        writedlm(export_name * "_$active.csv", points_conv[])
+                    #Set new points
+                    else
+                        mp = events(scene).mouseposition[]
+                        pos = to_world(scene, mp)
+                        pos_conv = calc_X_Y(pos, X_BC, Y_BC, pixel)
+                        println("------------------------")
+                        println("Your new coordinate [x,y] within the picture is: $pos.")
+                        println("\n X, Y = $pos_conv \n")
+                        println("To exit the function, please press the right mouse button.")
+                        println("------------------------")
+                        push!(points[], mp)
+                        push!(points_conv[], pos_conv)
+                        notify(points)
+                        notify(points_conv)
                     end
-
-                    lines[][active] = copy(points[])
-                    lines_conv[][active] = copy(points_conv[])
-                    active = active + 1
-
-                    if active > length(lines[])
-                        active = 1
-                    end
-
-                    points[] = []
-                    points_conv[] = []
-                    
-                    push!(points[] , lines[][active]...)
-                    push!(points_conv[] , lines_conv[][active]...)
-
-                    p1.color = colors[active]
-
-                    println("------------------------")
-                    println("Switched to line $active.")
-                    println("------------------------")
-                    notify(points)
-                    notify(lines)
-                elseif Keyboard.e in events(scene).keyboardstate
-                    println("------------------------")
-                    println("Exporting line_$active.")
-                    println("------------------------")
-                    writedlm(export_name * "_$active.csv", points_conv[])
-                else
-                    mp = events(scene).mouseposition[]
-                    pos = to_world(scene, mp)
-                    pos_conv = calc_X_Y(pos, X_BC, Y_BC, pixel)
-                    println("------------------------")
-                    println("Your new coordinate [x,y] within the picture is: $pos.")
-                    println("\n X, Y = $pos_conv \n")
-                    println("To exit the function, please close the window.")
-                    println("------------------------")
-                    push!(points[], mp)
-                    push!(points_conv[], pos_conv)
-                    notify(points)
-                    notify(points_conv)
                 end
             end
+            #Condition to stop digitalization---------------------------------
+            if event.button == Mouse.right
+                if event.action == Mouse.press
+                    println("You finished the digitalization.")
+                    println("Please close the GLMakie window you used.")
+                    break
+                end
+            end
+            return points_conv
         end
-        return points_conv
     end
     
     display(scene)
@@ -158,8 +175,8 @@ function digitizePlot(X_BC::Tuple, Y_BC::Tuple, file_name::String, export_name::
     return lines_conv[]
 end
 
-# file_name = "Examples_phase_diagram/Ol_Phase_diagram_without_framework.png"
-file_name = "Examples_phase_diagram/test.png"
-Y_BC       = (0, 350)   #min max of Y in the phase diagram
-X_BC       = (0.0, 1.0) 
+file_name = "Examples_phase_diagram/Ol_Phase_diagram_without_framework.png"
+# file_name = "Examples_phase_diagram/test.png"
+X_BC       = (0.0,   1.0)   #min max of X in the phase diagram
+Y_BC       = (0.0, 350.0)   #min max of Y in the phase diagram
 lines      = digitizePlot(X_BC, Y_BC, file_name)

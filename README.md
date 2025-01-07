@@ -29,7 +29,7 @@ To digitize points from a 2D plot you need to call the ```digitizePlot()``` func
 
 ### Creating a Line of Points
 
-Once the window has opened, you are free to click in the window to add points to create a line. This line is a list of points in the coordinate system defined by the boundary conditions of the axis. The coordinates of the new point will appear in the REPL.
+Once the window has opened, you are free to click in the window to add points to create a line (left mouse button). This line is a list of points in the coordinate system defined by the boundary conditions of the axis. The coordinates of the new point will appear in the REPL.
 
 ### Deleting Points
 
@@ -47,4 +47,6 @@ To switch between lines, hold the ```s``` key while clicking the left mouse butt
 
 To export the values of the active line, hold the ```e``` key while clicking the left mouse button. The default name of the .csv file will be "digitized_data_line#.csv". The name can be changed as a keyword argument in the function.
 
+### Ending digitalisation
 
+To end the digitalisation, click the right mouse button. The main function is automatically terminated. However, the user is asked to close the GLMakie window to avoid changes in the last line. Afterwards, the user can either start from the beginning with another digitalisation or continue with something else. 
