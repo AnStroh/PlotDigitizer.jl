@@ -47,6 +47,6 @@ To switch between lines, hold the ```s``` key while clicking the left mouse butt
 
 To export the values of the active line, hold the ```e``` key while clicking the left mouse button. The default name of the .csv file will be "digitized_data_line#.csv". The name can be changed as a keyword argument in the function.
 
-### Ending digitalisation
+### Ending Digitalisation
 
 To end the digitalisation, click the right mouse button. The main function is automatically terminated. However, the user is asked to close the GLMakie window to avoid changes in the last line. Afterwards, the user can either start from the beginning with another digitalisation or continue with something else. 
