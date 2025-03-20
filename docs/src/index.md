@@ -1,6 +1,6 @@
 ```@meta
-CurrentModule = Diff_Coupled
-```# Diff_Coupled.jl
+CurrentModule = PlotDigitizer
+```# PlotDigitizer.jl
 
 This is the documentation page of the package Diffusion coupled growth.
 # Installation
@@ -25,9 +25,9 @@ julia> ]
 
 After installation, you can test the package by running the following commands:
 ```julia-repl
-using Diff_Coupled
+using PlotDigitizer
 
 julia> ]
 
-(@v1.10) pkg> test Diff_Coupled
+(@v1.10) pkg> test PlotDigitizer
 ```

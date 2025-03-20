@@ -1,5 +1,6 @@
 using GLMakie, FileIO, DelimitedFiles
 
+export calc_X_Y, linear_func, digitizePlot
 
 """
     calc_X_Y(point, X_BC, Y_BC, pixel)
@@ -174,9 +175,3 @@ function digitizePlot(X_BC::Tuple, Y_BC::Tuple, file_name::String, export_name::
 
     return lines_conv[]
 end
-
-file_name = "Examples_phase_diagram/Ol_Phase_diagram_without_framework.png"
-# file_name = "Examples_phase_diagram/test.png"
-X_BC       = (0.0,   1.0)   #min max of X in the phase diagram
-Y_BC       = (0.0, 350.0)   #min max of Y in the phase diagram
-lines      = digitizePlot(X_BC, Y_BC, file_name)

@@ -2,7 +2,7 @@ using Documenter
 push!(LOAD_PATH, "../src/")
 using .PlotDigitizer
 
-# Get Diff_Coupled.jl root directory
+# Get PlotDigitizer.jl root directory
 DC_root_dir = dirname(@__DIR__)
 
 license = read(joinpath(DC_root_dir, "LICENSE.md"), String)
@@ -67,9 +67,9 @@ open(joinpath(@__DIR__, "src", "man", "contributing.md"), "w") do io
   end
 @info "Making documentation..."
 makedocs(;
-    sitename="Diff_Coupled.jl",
+    sitename="PlotDigitizer.jl",
     authors="Annalena Stroh, Jacob Frasunkiewicz and contributors",
-    modules=[Diff_Coupled],
+    modules=[PlotDigitizer],
     format=Documenter.HTML(; assets = ["assets/favicon.ico"],
     prettyurls=get(ENV, "CI", nothing) == "true",
     size_threshold_ignore = ["man/listfunctions.md"]), # easier local build
