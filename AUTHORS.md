@@ -4,7 +4,7 @@
 who are also its main contributors and who can be contacted in case of
 questions about [PlotDigitizer](https://github.com/AnStroh/PlotDigitizer). In addition, there are *contributors* who have
 provided substantial additions or modifications. Together, these two groups form
-"PlotDigitizer.jl Authors".
+"PlotDigitizer.jl.gitjl Authors".
 
 ## Principal Developers
 * [Annalena Stroh](https://github.com/AnStroh),

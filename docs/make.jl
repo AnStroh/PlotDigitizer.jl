@@ -1,6 +1,5 @@
-using Documenter
+using Documenter, PlotDigitizer
 push!(LOAD_PATH, "../src/")
-using .PlotDigitizer
 
 # Get PlotDigitizer.jl root directory
 DC_root_dir = dirname(@__DIR__)
@@ -86,4 +85,4 @@ makedocs(;
     ],
 )
 
-deploydocs(; repo="https://github.com/AnStroh/PlotDigitizer", devbranch="main")
+deploydocs(; repo="https://github.com/AnStroh/PlotDigitizer.jl", devbranch="main")
