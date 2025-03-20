@@ -22,7 +22,7 @@ open(joinpath(@__DIR__, "src", "man", "license.md"), "w") do io
   # Point to source license file
   println(io, """
   ```@meta
-  EditURL = "https://github.com/AnStroh/PlotDigitizer/blob/main/LICENSE.md"
+  EditURL = "https://github.com/AnStroh/PlotDigitizer.jl/blob/main/LICENSE.md"
   ```
   """)
   # Write the modified contents
@@ -54,7 +54,7 @@ open(joinpath(@__DIR__, "src", "man", "contributing.md"), "w") do io
     # Point to source license file
     println(io, """
     ```@meta
-    EditURL = "https://github.com/AnStroh/PlotDigitizer/blob/main/CONTRIBUTING.md"
+    EditURL = "https://github.com/AnStroh/PlotDigitizer.jl/blob/main/CONTRIBUTING.md"
     ```
     """)
     # Write the modified contents
