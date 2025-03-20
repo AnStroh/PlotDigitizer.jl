@@ -15,7 +15,7 @@ julia> ]
 (@v1.10) pkg> activate .
 ```
 
-to activate the environemt. Following type 
+to activate the environment. Following type 
 
 ```julia
 (PlotDigitizer) pkg> instantiate
